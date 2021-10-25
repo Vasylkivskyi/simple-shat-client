@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import socket from './socket';
+import Join from './components/Join';
 
-function App() {
+
+const App = () => {
+  const [isJoined, setJoined] = React.useState(false);
+  const [state, setState] = React.useState({
+    users: [],
+    messages: [],
+    room: '',
+  })
+
+  React.useEffect(() => {
+    socket.on('HAND_SHAKE', () => {
+      console.log('hello')
+    });
+    socket.on('SET_USERS', ({ room, users }) => {
+      setJoined(true);
+      setState((prev) => ({
+        ...prev,
+        users: users,
+        room,
+      }))
+    })
+  }, []);
+
+  const onJoin = (room, name) => {
+    socket.emit('SET_USERS', { room, name });
+  }
+
+  console.log(state)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      {!isJoined ? <Join onJoin={onJoin} /> : null}
     </div>
   );
 }
