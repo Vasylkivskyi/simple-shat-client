@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { Button, Form } from 'semantic-ui-react'
 
 const Join = ({ onJoin }) => {
   const [room, setRoom] = React.useState('');
@@ -15,12 +16,17 @@ const Join = ({ onJoin }) => {
 
   return (
     <div className="join">
-      <form onSubmit={onSubmit}>
-        <h3>Welcome</h3>
-        <input type="text" onChange={(e) => setRoom(e.target.value)} value={room} placeholder="room id" />
-        <input type="text" onChange={(e) => setName(e.target.value)} value={name} placeholder="name"/>
-        <button type="submit">Enter</button>
-      </form>
+      <Form onSubmit={onSubmit}>
+        <Form.Field>
+          <label>Room name</label>
+          <input placeholder='Room name' onChange={(e) => setRoom(e.target.value)} value={room}/>
+        </Form.Field>
+        <Form.Field>
+          <label>User Name</label>
+          <input placeholder='User Name' onChange={(e) => setName(e.target.value)} value={name}/>
+        </Form.Field>
+        <Button type='submit'>Submit</Button>
+      </Form>
     </div>
   )
 }
