@@ -1,6 +1,7 @@
 import React from 'react';
 import socket from '../utils/socket';
 import Join from './Join/Join';
+import Chat from './Chat/Chat';
 
 const App = () => {
   const [isJoined, setJoined] = React.useState(false);
@@ -28,11 +29,11 @@ const App = () => {
     socket.emit('SET_USERS', { room, name });
   };
 
-  console.log(state);
+  console.log({ isJoined });
 
   return (
     <div className="app">
-      {!isJoined ? <Join onJoin={onJoin} /> : null}
+      {!isJoined ? <Join onJoin={onJoin} /> : <Chat />}
     </div>
   );
 };
