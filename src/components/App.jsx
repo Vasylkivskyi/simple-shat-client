@@ -9,6 +9,8 @@ const App = () => {
     users: [],
     messages: [],
     room: '',
+    text: '',
+    name: '',
   });
 
   React.useEffect(() => {
@@ -17,23 +19,51 @@ const App = () => {
     });
     socket.on('SET_USERS', ({ room, users }) => {
       setJoined(true);
+      console.log({ room, users });
       setState((prev) => ({
         ...prev,
         users,
         room,
       }));
     });
+    socket.on('SET_MESSAGES', (messages) => {
+      setState((prev) => ({
+        ...prev,
+        messages,
+      }));
+    });
   }, []);
 
   const onJoin = (room, name) => {
+    setState((prev) => ({
+      ...prev,
+      name,
+    }));
     socket.emit('SET_USERS', { room, name });
   };
 
-  console.log({ isJoined });
+  const send = () => {
+    const { room, text, name } = state;
+    if (!text.length) return;
+    socket.emit('SET_MESSAGES', { room, text, name });
+    setState((prev) => ({
+      ...prev,
+      text: '',
+    }));
+  };
+
+  const onChange = (text) => {
+    setState((prev) => ({
+      ...prev,
+      text,
+    }));
+  };
 
   return (
     <div className="app">
-      {!isJoined ? <Join onJoin={onJoin} /> : <Chat />}
+      {!isJoined
+        ? <Join onJoin={onJoin} />
+        : <Chat {...state} onChange={onChange} send={send} />}
     </div>
   );
 };
